@@ -1,11 +1,15 @@
 # encoding: utf-8
 # Programación y Diseño Orientado a Objetos - Práctica Qytetet
-# Función Main
+# Clase PruebaQytetet (Función Main)
 # Autor: Jose Luis Gallego Peña
 
 require_relative "sorpresa.rb"
 require_relative "qytetet.rb"
 require_relative "tipo_sorpresa.rb"
+require_relative "casilla.rb"
+require_relative "titulo_propiedad.rb"
+require_relative "tipo_casilla.rb"
+require_relative "tablero.rb"
 
 module ModeloQytetet
    class PruebaQytetet
@@ -18,10 +22,8 @@ module ModeloQytetet
          sorpresas = Array.new   # Array donde almacenar las sorpresas
          
          for s in @@juego.mazo
-            if s.valor > 0
-               
-               sorpresas << s
-               
+            if s.valor > 0               
+               sorpresas << s             
             end
          end
          
@@ -35,10 +37,8 @@ module ModeloQytetet
          sorpresas = Array.new   # Array donde almacenar las sorpresas
          
          for s in @@juego.mazo
-            if s.tipo == TipoSorpresa::IRACASILLA
-               
-               sorpresas << s
-               
+            if s.tipo == TipoSorpresa::IRACASILLA       
+               sorpresas << s 
             end
          end
          
@@ -52,10 +52,8 @@ module ModeloQytetet
          sorpresas = Array.new   # Array donde almacenar las sorpresas
          
          for s in @@juego.mazo
-            if s.tipo == tipo
-               
-               sorpresas << s
-               
+            if s.tipo == tipo               
+               sorpresas << s              
             end
          end
          
@@ -64,43 +62,40 @@ module ModeloQytetet
       end
     
       def self.main
-      
-         @@juego.inicializarCartasSorpresa
+         
+         @@juego.inicializar_tablero
+         @@juego.inicializar_cartas_sorpresa
          
          # Invocar cada uno de los métodos definidos anteriormente #
          
          puts "Todas las cartas \n"
-         for s in @@juego.mazo
-            
-            puts s.to_s
-            
+         for s in @@juego.mazo            
+            puts s.to_s           
          end
          
-         puts "Método 1: Sorpresas con valor positivo \n"
+         puts "\n Método 1: Sorpresas con valor positivo \n\n"
          s_positivas = sorpresaspositivas
-         for s in s_positivas
-            
-            puts s.to_s
-            
+         for s in s_positivas           
+            puts s.to_s          
          end 
          
-         puts "Método 2: Sorpresas de tipo IRACASILLA \n"
+         puts "\n Método 2: Sorpresas de tipo IRACASILLA \n\n"
          s_iracasilla = sorpresasiracasilla
-         for s in s_iracasilla
-            
-            puts s.to_s
-            
+         for s in s_iracasilla            
+            puts s.to_s         
          end
          
-         puts "Método 3: Sorpresas de cada tipo \n"
+         puts "\n Método 3: Sorpresas de cada tipo \n\n"
          for t in TipoSorpresa::constants      
-            for s in sorpresastipo(TipoSorpresa.const_get(t))
-               
+            for s in sorpresastipo(TipoSorpresa.const_get(t))          
                puts s.to_s
-               puts "\n"
-               
+               puts "\n" 
             end
          end
+         
+         puts "\n TABLERO DE JUEGO \n\n"
+         puts @@juego.tablero.to_s
+         
       end
    end
   

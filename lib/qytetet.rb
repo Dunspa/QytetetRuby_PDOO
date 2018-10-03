@@ -6,16 +6,17 @@
 module ModeloQytetet
    class Qytetet
     
-      attr_reader :mazo
+      attr_reader :mazo, :tablero
     
       def initialize
       
          @mazo = Array.new # Almacena las cartas
-      
+         @tablero          # Tablero de juego
+         
       end
     
       # Se crean y se incluyen en el mazo todas las cartas sorpresa
-      def inicializarCartasSorpresa
+      def inicializar_cartas_sorpresa
       
          # PAGARCOBRAR #
       
@@ -37,7 +38,7 @@ module ModeloQytetet
       
          # Carta sorpresa que manda al jugador a una casilla
          @mazo << Sorpresa.new("Te tropiezas y sales volando a una casilla 
-         diferente.", 16, TipoSorpresa::IRACASILLA)
+         diferente.", @tablero.carcel.numeroCasilla, TipoSorpresa::IRACASILLA)
     
          # Carta sorpresa que manda al jugador a una casilla
          @mazo << Sorpresa.new("Te tropiezas y sales volando a una casilla 
@@ -71,5 +72,13 @@ module ModeloQytetet
          pagado tu fianza. Sales de la cárcel.", 0, TipoSorpresa::SALIRCARCEL)
       
       end
+      
+      # Inicializa el tablero de juego
+      def inicializar_tablero
+         
+         @tablero = Tablero.new
+         
+      end
+      
    end
 end

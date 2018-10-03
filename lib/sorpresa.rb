@@ -10,15 +10,15 @@ module ModeloQytetet
     
       def initialize(text, val, tip)
       
-         @texto = text
-         @tipo = tip
-         @valor = val
+         @texto = text  # Describe la sorpresa
+         @tipo = tip    # Indica el tipo de sorpresa
+         @valor = val   # Afecta de forma diferente según la carta
      
       end
     
       def to_s
       
-         "Texto: #{@texto} \n Valor: #{@valor} \n Tipo: #{@tipo}"
+         "Sorpresa{Texto: #{@texto}, Valor: #{@valor}, Tipo: #{@tipo}} \n"
       
       end 
    end
