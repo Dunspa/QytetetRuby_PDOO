@@ -5,14 +5,12 @@
 
 module ModeloQytetet
    module TipoCasilla
-      
       SALIDA = :Salida
       CALLE = :Calle
       SORPRESA = :Sorpresa
       CARCEL = :Carcel
       JUEZ = :Juez
       IMPUESTO = :Impuesto
-      PARKING = :Parking
-      
+      PARKING = :Parking 
    end
 end

@@ -10,15 +10,16 @@ require_relative "casilla.rb"
 require_relative "titulo_propiedad.rb"
 require_relative "tipo_casilla.rb"
 require_relative "tablero.rb"
+require_relative "jugador.rb"
+require_relative "dado.rb"
 
 module ModeloQytetet
    class PruebaQytetet
     
-      @@juego = Qytetet.new
+      @@juego = Qytetet.instance
     
       # Devuelve las sorpresas cuyo valor es mayor que 0
       def self.sorpresaspositivas
-         
          sorpresas = Array.new   # Array donde almacenar las sorpresas
          
          for s in @@juego.mazo
@@ -27,13 +28,11 @@ module ModeloQytetet
             end
          end
          
-         sorpresas
-         
+         sorpresas        
       end
       
       # Devuelve las sorpresas cuyo tipo es IRACASILLA
       def self.sorpresasiracasilla
-         
          sorpresas = Array.new   # Array donde almacenar las sorpresas
          
          for s in @@juego.mazo
@@ -42,13 +41,11 @@ module ModeloQytetet
             end
          end
          
-         sorpresas
-         
+         sorpresas        
       end
       
       # Devuelve las sorpresas cuyo tipo se especifica
-      def self.sorpresastipo(tipo)
-         
+      def self.sorpresastipo(tipo)        
          sorpresas = Array.new   # Array donde almacenar las sorpresas
          
          for s in @@juego.mazo
@@ -57,18 +54,36 @@ module ModeloQytetet
             end
          end
          
-         sorpresas
+         sorpresas       
+      end
+      
+      # Pide el nombre de los jugadores que van a jugar Qytetet
+      def self.get_nombre_jugadores
+         jugadores = Array.new
          
+         puts "¿Cuántos jugadores van a jugar? (4 máximo, 2 mínimo)"
+         n = gets.chomp.to_i
+         puts "Introduzca los nombres de los #{n} jugadores:"
+         for i in 1..n
+            s = gets
+            jugadores << s
+         end
+         
+         jugadores
       end
     
-      def self.main
+      def self.main 
+         jugadores = get_nombre_jugadores
+         @@juego.inicializar_juego(jugadores)
          
-         @@juego.inicializar_tablero
-         @@juego.inicializar_cartas_sorpresa
+         puts "\nJugadores:"
+         for s in jugadores
+            puts s
+         end
          
          # Invocar cada uno de los métodos definidos anteriormente #
          
-         puts "Todas las cartas \n"
+         puts "\n Todas las cartas \n\n"
          for s in @@juego.mazo            
             puts s.to_s           
          end
@@ -93,13 +108,9 @@ module ModeloQytetet
             end
          end
          
-         puts "\n TABLERO DE JUEGO \n\n"
-         puts @@juego.tablero.to_s
-         
+         puts @@juego.to_s
       end
    end
-  
    # Invocar al método main
    PruebaQytetet.main
-  
 end

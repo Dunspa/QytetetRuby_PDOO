@@ -5,21 +5,23 @@
 
 module ModeloQytetet
    class Tablero
-      
       attr_reader :casillas, :carcel
       
-      def initialize
+      #-------------------------------------------------------------------------
       
+      @@NUM_CASILLAS = 20
+      
+      def initialize
          @casillas = Array.new   # Contiene las casillas
          @carcel                 # Indica la cárcel
          
          inicializar
-         
       end
+      
+      #-------------------------------------------------------------------------
       
       # Inicializa todas las casillas del tablero con sus atributos
       def inicializar
-         
          @casillas << Casilla.new_casilla_normal(0, 0, TipoCasilla::SALIDA)
          
          @casillas << Casilla.new_calle(1, TituloPropiedad.new("Calle Bufita",
@@ -73,22 +75,19 @@ module ModeloQytetet
          500, 70, 0.10, 999, 475))
    
          @carcel = @casillas[15]
-         
       end
       
-      def to_s
-         
-         tablero = ""
+      def to_s   
+         tablero = "\n"
          
          for c in casillas
             tablero = tablero + c.to_s + "\n"
          end
          
          tablero
-         
       end
       
+      # Visibilidad de los métodos
       private :inicializar
-      
    end
 end
