@@ -4,7 +4,7 @@
 # Autor: Jose Luis Gallego Peña
 
 module ModeloQytetet
-   module TipoCasilla
+    module TipoCasilla
       SALIDA = :Salida
       CALLE = :Calle
       SORPRESA = :Sorpresa
@@ -12,5 +12,5 @@ module ModeloQytetet
       JUEZ = :Juez
       IMPUESTO = :Impuesto
       PARKING = :Parking 
-   end
+    end
 end

@@ -21,38 +21,115 @@ module ModeloQytetet
       end
       
       #-------------------------------------------------------------------------
-      private
       
       def cancelar_hipoteca(titulo)
-         raise NotImplementedError
+         coste_cancelar = titulo.calcular_coste_cancelar
+         puede_cancelar = tengo_saldo(coste_cancelar)
+         if (puede_cancelar)
+           modificar_saldo(-coste_cancelar)
+           titulo.cancelar_hipoteca
+         end
+
+         return puede_cancelar
       end
       
       def comprar_titulo_propiedad
-         raise NotImplementedError
+         comprado = false
+         coste_compra = @casilla_actual.coste
+         if (coste_compra < @saldo)
+           titulo = @casilla_actual.asignar_propietario(self)
+           @propiedades << titulo
+           modificar_saldo(-coste_compra)
+           comprado = true
+         end
+
+         return comprado
       end
       
       def cuantas_casas_hoteles_tengo
-         raise NotImplementedError
+         casas_hoteles = 0
+
+         for t in @propiedades
+           casas_hoteles += (t.numCasas + t.numHoteles)
+         end
+
+         return casas_hoteles
       end
       
       def debo_pagar_alquiler
-         raise NotImplementedError
+         tiene_propietario = false
+         esta_encarcelado = false
+         esta_hipotecada = false
+         titulo = @casilla_actual.titulo
+         es_de_mi_propiedad = es_de_mi_propiedad(titulo)
+
+         if (!es_de_mi_propiedad)
+           tiene_propietario = titulo.tengo_propietario
+         end
+
+         if (!es_de_mi_propiedad && tiene_propietario)
+           esta_encarcelado = titulo.propietario_encarcelado
+         end
+
+         if (!es_de_mi_propiedad && tiene_propietario && !esta_encarcelado)
+           esta_hipotecada = titulo.hipotecada
+         end
+
+         return (!es_de_mi_propiedad && tiene_propietario && !encarcelado && !esta_hipotecada)
       end
       
       def devolver_carta_libertad
-         raise NotImplementedError
+         copia_carta_libertad = Sorpresa.new(@carta_libertad.texto, 
+           @carta_libertad.valor, @carta_libertad.tipo)
+         @carta_libertad = nil
+
+         return copia_carta_libertad
       end
       
       def edificar_casa(titulo)
-         raise NotImplementedError
+         edificada = false
+         num_casas = titulo.numCasas
+
+         if (num_casas < 4)
+           coste_edificar_casa = titulo.precioEdificar
+           tengo_saldo = tengo_saldo(coste_edificar_casa)
+
+           if (tengo_saldo)
+             titulo.edificar_casa
+             modificar_saldo(-coste_edificar_casa)
+             edificada = true
+           end
+         end
+
+         return edificada
       end
       
       def edificar_hotel(titulo)
-         raise NotImplementedError
+         edificada = false
+         num_casas = titulo.numCasas
+         num_hoteles = titulo.numHoteles
+
+         if ((num_casas == 4) && (num_hoteles < 4))
+           coste_edificar_hotel = titulo.precioEdificar
+           tengo_saldo = tengo_saldo(coste_edificar_hotel)
+
+           if (tengo_saldo)
+             titulo.edificar_hotel
+             modificar_saldo(-coste_edificar_hotel)
+             edificada = true
+           end
+         end
+
+         return edificada
+      end
+      
+      def eliminar_de_mis_propiedades(titulo)
+         @propiedades.remove(titulo)
+         titulo.propietario = nil
       end
       
       def es_de_mi_propiedad(titulo)
-         raise NotImplementedError
+         return @propiedades.include?(titulo)
       end
       
       def estoy_en_calle_libre
@@ -60,47 +137,76 @@ module ModeloQytetet
       end
       
       def hipotecar_propiedad(titulo)
-         raise NotImplementedError
+         coste_hipoteca = titulo.hipotecar
+         modificar_saldo(coste_hipoteca)
       end
       
-      def ir_a_carcel(casilla)
-         raise NotImplementedError
+      def ir_a_carcel(casilla_carcel)
+         @casilla_actual = casilla_carcel
+         @encarcelado = true
       end
       
       def modificar_saldo(cantidad)
-         raise NotImplementedError
+         @saldo += cantidad
       end
       
       def obtener_capital
-         raise NotImplementedError
+         capital = @saldo
+
+         for t in @propiedades
+           capital += (t.precioCompra + (t.numCasas + t.numHoteles) * t.precioEdificar)
+
+           if (t.hipotecada)
+             capital -= t.hipotecaBase
+           end
+         end
+
+         return capital
       end
       
-      def obtener_propiedades(hipotecada)
-         raise NotImplementedError
+      def obtener_propiedades(estado_hipoteca)
+         titulos = Array.new
+
+         for t in @propiedades
+           if (t.hipotecada == estado_hipoteca)
+             titulos << t
+           end
+         end
+
+         return titulos
       end
       
       def pagar_alquiler
-         raise NotImplementedError
+         coste_alquiler = @casilla_actual.pagar_alquiler
+         modificar_saldo(-coste_alquiler)
       end
       
       def pagar_impuesto
-         raise NotImplementedError
+         @saldo -= @casilla_actual.coste
       end
       
       def pagar_libertad(cantidad)
-         raise NotImplementedError
+         tengo_saldo = tengo_saldo(cantidad)
+
+         if (tengo_saldo)
+           @encarcelado = false
+           modificar_saldo(-cantidad)
+         end
       end
       
       def tengo_carta_libertad
-         raise NotImplementedError
+         return (@carta_libertad != nil)
       end
       
       def tengo_saldo(cantidad)
-         raise NotImplementedError
+         return (saldo > cantidad)
       end
       
       def vender_propiedad(casilla)
-         raise NotImplementedError
+         titulo = casilla.titulo
+         eliminar_de_mis_propiedades(titulo)
+         precio_venta = titulo.calcular_precio_venta
+         modificar_saldo(precio_venta)
       end
       
       public
@@ -120,5 +226,17 @@ module ModeloQytetet
          
          s
       end
+      
+      def <=> (otro_jugador)
+         otro_capital = otro_jugador.obtener_capital
+         mi_capital = obtener_capital
+         if (otro_capital > mi_capital)
+           return 1 end
+         if (otro_capital < mi_capital)
+           return -1 end
+         return 0
+      end
+      
+      private :eliminar_de_mis_propiedades, :es_de_mi_propiedad, :tengo_saldo
    end
 end

@@ -20,6 +20,10 @@ module ModeloQytetet
       
       #-------------------------------------------------------------------------
       
+      def es_casilla_carcel(numero_casilla)
+         return (numero_casilla == @carcel.numero_casilla)
+      end
+      
       # Inicializa todas las casillas del tablero con sus atributos
       def inicializar
          @casillas << Casilla.new_casilla_normal(0, 0, TipoCasilla::SALIDA)
@@ -75,6 +79,19 @@ module ModeloQytetet
          500, 70, 0.10, 999, 475))
    
          @carcel = @casillas[15]
+      end
+      
+      def obtener_casilla_final(casilla, desplazamiento)
+         posicion = casilla.numero_casilla + desplazamiento
+         if (posicion > 19)
+            posicion -= 20
+         end
+         
+         return @casillas.at(posicion)
+      end
+      
+      def obtener_casilla_numero(numero_casilla)
+         return @casillas.at(numero_casilla)
       end
       
       def to_s   

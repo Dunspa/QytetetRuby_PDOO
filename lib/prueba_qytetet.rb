@@ -12,6 +12,7 @@ require_relative "tipo_casilla.rb"
 require_relative "tablero.rb"
 require_relative "jugador.rb"
 require_relative "dado.rb"
+require_relative "estado_juego.rb"
 
 module ModeloQytetet
    class PruebaQytetet
@@ -82,7 +83,7 @@ module ModeloQytetet
          end
          
          # Invocar cada uno de los métodos definidos anteriormente #
-         
+=begin
          puts "\n Todas las cartas \n\n"
          for s in @@juego.mazo            
             puts s.to_s           
@@ -106,9 +107,30 @@ module ModeloQytetet
                puts s.to_s
                puts "\n" 
             end
-         end
+         end    
+         # puts @@juego.to_s
          
-         puts @@juego.to_s
+         # Pruebas de la práctica 3  
+         puts "\nJugador juega: #{@@juego.jugador_actual.nombre}"
+         @@juego.mover(1)
+         puts "\nJugador se mueve a casilla #{@@juego.obtener_casilla_jugador_actual}"
+         @@juego.comprar_titulo_propiedad
+         puts "\nJugador compra #{@@juego.obtener_casilla_jugador_actual.titulo.nombre}"
+         puts "#{@@juego.jugador_actual.es_de_mi_propiedad(@@juego.obtener_casilla_jugador_actual.titulo)}"
+         @@juego.siguiente_jugador
+         puts "\nSiguiente jugador: #{@@juego.jugador_actual.nombre}"
+         @@juego.mover(1)
+         puts "\nJugador se mueve a casilla #{@@juego.obtener_casilla_jugador_actual}"
+         puts "Saldo del jugador #{@@juego.jugador_actual.saldo}"
+         @@juego.siguiente_jugador
+         puts "\nSiguiente jugador: #{@@juego.jugador_actual.nombre}"
+         @@juego.mover(3)
+         puts "\nJugador se mueve a casilla #{@@juego.obtener_casilla_jugador_actual}"
+         puts "\nJugador obtiene carta sorpresa: #{@@juego.carta_actual}"
+         @@juego.aplicar_sorpresa
+         puts "Estado actual del jugador #{@@juego.jugador_actual}"
+         
+=end 
       end
    end
    # Invocar al método main

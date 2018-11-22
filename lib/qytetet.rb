@@ -9,7 +9,7 @@ module ModeloQytetet
    class Qytetet
       include Singleton
       attr_reader :mazo, :tablero, :jugadores, :jugador_actual, :dado
-      attr_accessor :carta_actual
+      attr_accessor :carta_actual, :estado_juego
       
       #-------------------------------------------------------------------------
       
@@ -25,49 +25,159 @@ module ModeloQytetet
          @tablero                # Tablero de juego  
          @carta_actual
          @jugador_actual
-         @dado
+         @dado = Dado.instance
+         @estado_juego
       end
       
       #-------------------------------------------------------------------------
       
       def actuar_si_en_casilla_edificable
-         raise NotImplementedError
+         debo_pagar = @jugador_actual.debo_pagar_alquiler
+         if (debo_pagar)
+            @jugador_actual.pagar_alquiler
+            
+            if (@jugador_actual.saldo <= 0)
+               @estado_juego = EstadoJuego::ALGUNJUGADORENBANCARROTA
+            end
+         end
+         
+         casilla = obtener_casilla_jugador_actual
+         tengo_propietario = casilla.tengo_propietario
+         if (@estado_juego != EstadoJuego::ALGUNJUGADORENBANCARROTA)
+            if (tengo_propietario)
+               @estado_juego = EstadoJuego::JA_PUEDEGESTIONAR
+            else
+               @estado_juego = EstadoJuego::JA_PUEDECOMPRAROGESTIONAR
+            end
+         end
       end
       
       def actuar_si_en_casilla_no_edificable
-         raise NotImplementedError
+         @estado_juego = EstadoJuego::JA_PUEDEGESTIONAR
+         
+         casilla_actual = @jugador_actual.casilla_actual
+         if (casilla_actual.tipo == TipoCasilla::IMPUESTO)
+            @jugador_actual.pagar_impuesto
+            
+            if (@jugador_actual.saldo <= 0)
+               @estado_juego = EstadoJuego::ALGUNJUGADORENBANCARROTA
+            end
+         else
+            if (casilla_actual.tipo == TipoCasilla::JUEZ)
+               encarcelar_jugador
+            elsif (casilla_actual.tipo == TipoCasilla::SORPRESA)
+               @carta_actual = @mazo.shift
+               @estado_juego = EstadoJuego::JA_CONSORPRESA
+            end
+         end
       end
       
       def aplicar_sorpresa
-         raise NotImplementedError
+         @estado_juego = EstadoJuego::JA_PUEDEGESTIONAR
+         
+         if (@carta_actual.tipo == TipoSorpresa::PAGARCOBRAR)
+            @jugador_actual.modificar_saldo(@carta_actual.valor)
+            
+            if (@jugador_actual.saldo <= 0)
+               @estado_juego = EstadoJuego::ALGUNJUGADORENBANCARROTA
+            end
+         elsif (@carta_actual.tipo == TipoSorpresa::IRACASILLA)
+            valor = @carta_actual.valor
+            casilla_carcel = @tablero.es_casilla_carcel(valor)
+            
+            if (casilla_carcel)
+               encarcelar_jugador
+            else
+               mover(valor)
+            end
+         elsif (@carta_actual.tipo == TipoSorpresa::PORCASAHOTEL)
+            cantidad = @carta_actual.valor
+            numero_total = @jugador_actual.cuantas_casas_hoteles_tengo
+            @jugador_actual.modificar_saldo(numero_total * cantidad)
+            
+            if (@jugador_actual.saldo <= 0)
+               @estado_juego = EstadoJuego::ALGUNJUGADORENBANCARROTA
+            end
+         elsif (@carta_actual.tipo == TipoSorpresa::PORJUGADOR)
+            for j in @jugadores
+               if (j != @jugador_actual)
+                  j.modificar_saldo(@carta_actual.valor)
+                  
+                  if (j.saldo <= 0)
+                     @estado_juego = EstadoJuego::ALGUNJUGADORENBANCARROTA
+                  end
+                  
+                  @jugador_actual.modificar_saldo(-@carta_actual.valor)
+                  
+                  if (@jugador_actual.saldo <= 0)
+                     @estado_juego = EstadoJuego::ALGUNJUGADORENBANCARROTA
+                  end
+               end
+            end
+         end
       end
       
       def cancelar_hipoteca(numero_casilla)
-         raise NotImplementedError
+         @estado_juego = EstadoJuego::JA_PUEDEGESTIONAR
+         titulo = @tablero.obtener_casilla_numero(numero_casilla).titulo
+         return @jugador_actual.cancelar_hipoteca(titulo)
       end
       
       def comprar_titulo_propiedad
-         raise NotImplementedError
+         comprado = @jugador_actual.comprar_titulo_propiedad
+         
+         if (comprado)
+            @estado_juego = EstadoJuego::JA_PUEDEGESTIONAR
+         end
+         
+         return comprado
       end
       
       def edificar_casa(numero_casilla)
-         raise NotImplementedError
+         casilla = @tablero.obtener_casilla_numero(numero_casilla)
+         titulo = casilla.titulo
+         edificada = @jugador_Actual.edificar_casa(titulo)
+         
+         if (edificada)
+            @estado_juego = EstadoJuego::JA_PUEDEGESTIONAR
+         end
+         
+         return edificada
       end
       
       def edificar_hotel(numero_casilla)
-         raise NotImplementedError
+         casilla = @tablero.obtener_casilla_numero(numero_casilla)
+         titulo = casilla.titulo
+         edificada = @jugador_actual.edificar_hotel(titulo)
+         
+         if (edificada)
+            @estado_juego = EstadoJuego::JA_PUEDEGESTIONAR
+         end
+         
+         return edificada
       end
       
       def encarcelar_jugador
-         raise NotImplementedError
+         if (!@jugador_actual.tengo_carta_libertad)
+            casilla_carcel = @tablero.carcel
+            @jugador_actual.ir_a_carcel(casilla_carcel)
+            @estado_juego = EstadoJuego::JA_ENCARCELADO
+         else
+            carta = @jugador_actual.devolver_carta_libertad
+            @mazo << carta
+            @estado_juego = EstadoJuego::JA_PUEDEGESTIONAR
+         end
       end
       
       def get_valor_dado
-         raise NotImplementedError
+         return @dado.valor
       end
       
       def hipotecar_propiedad(numero_casilla)
-         raise NotImplementedError
+         casilla = @tablero.obtener_casilla_numero(numero_casilla)
+         titulo = casilla.titulo
+         @jugador_actual.hipotecar_propiedad(titulo)
+         @estado_juego = EstadoJuego::JA_PUEDEGESTIONAR
       end
       
       # Se crean y se incluyen en el mazo todas las cartas sorpresa
@@ -118,13 +228,17 @@ module ModeloQytetet
          # SALIRCARCEL #      
          # Carta sorpresa que saca al jugador de la cárcel
          @mazo << Sorpresa.new("Parece ser que le has caído bien a alguien y ha
-         pagado tu fianza. Sales de la cárcel.", 0, TipoSorpresa::SALIRCARCEL)  
+         pagado tu fianza. Sales de la cárcel.", 0, TipoSorpresa::SALIRCARCEL) 
+         
+         # Se barajan las cartas
+         @mazo.shuffle
       end
       
       def inicializar_juego(nombres)
          inicializar_jugadores(nombres)
          inicializar_tablero
          inicializar_cartas_sorpresa
+         salida_jugadores
       end
       
       def inicializar_jugadores(nombres)
@@ -138,19 +252,50 @@ module ModeloQytetet
       end
       
       def intentar_salir_carcel(metodo)
-         raise NotImplementedError
+         if (metodo == MetodoSalirCarcel::TIRANDODADO)
+            resultado = tirar_dado
+            
+            if (resultado >= 5)
+               @jugador_actual.encarcelado = false
+            end
+         elsif (metodo == MetodoSalirCarcel::PAGANDOLIBERTAD)
+            @jugador_actual.pagar_libertad(@@PRECIO_LIBERTAD)
+         end
+         
+         encarcelado = @jugador_actual.encarcelado
+         if (encarcelado)
+            @estado_juego = EstadoJuego::JA_ENCARCELADO
+         else
+            @estado_juego = EstadoJuego::JA_PREPARADO
+         end
+         
+         return !encarcelado
       end
       
       def jugar
-         raise NotImplementedError
+         num = tirar_dado
+         pos = @tablero.obtener_casilla_final(@jugador_actual.casilla_actual, num).numero_casilla
+         mover(pos)
       end
       
       def mover (num_casilla_destino)
-         raise NotImplementedError
+         casilla_inicial = @jugador_actual.casilla_actual
+         casilla_final = @tablero.obtener_casilla_numero(num_casilla_destino)
+         @jugador_actual.casilla_actual = casilla_final
+         
+         if (num_casilla_destino < casilla_inicial.numero_casilla)
+            @jugador_actual.modificar_saldo(@@SALDO_SALIDA)
+         end
+         
+         if (casilla_final.soy_edificable)
+            actuar_si_en_casilla_edificable
+         else
+            actuar_si_en_casilla_no_edificable
+         end
       end
       
       def obtener_casilla_jugador_actual
-         raise NotImplementedError
+         return @jugador_actual.casilla_actual
       end
       
       def obtener_casillas_tablero
@@ -158,35 +303,73 @@ module ModeloQytetet
       end
       
       def obtener_propiedades_jugador
-         raise NotImplementedError
+         propiedades_jugador = Array.new
+         
+         for c in @tablero.casillas
+            if (c.tipo == TipoCasilla::CALLE)
+               if (@jugador_actual.propiedades.include?(c.titulo))
+                  propiedades_jugador << c.numero_casilla
+               end
+            end
+         end
+         
+         return propiedades_jugador
       end
       
-      def obtener_propiedades_jugador_segun_estado_hipoteca
-         raise NotImplementedError
+      def obtener_propiedades_jugador_segun_estado_hipoteca(estado_hipoteca)
+         propiedades_segun_hipoteca = Array.new
+         
+         for c in @tablero.casillas
+            if (c.tipo == TipoCasilla::CALLE)
+               if (@jugador_actual.obtener_propiedades(estado_hipoteca).include?(c.titulo))
+                  propiedades_segun_hipoteca << c.numero_casilla
+               end
+            end
+         end
+         
+         return propiedades_segun_hipoteca
       end
       
       def obtener_ranking
-         raise NotImplementedError
+         @jugadores = @jugadores.sort
       end
       
       def obtener_saldo_jugador_actual
-         raise NotImplementedError
+         return @jugador_actual.saldo
       end
       
       def salida_jugadores
-         raise NotImplementedError
+         for j in @jugadores
+            j.casilla_actual = @tablero.obtener_casilla_numero(0)
+         end
+         
+         jugador_actual = rand(@jugadores.size)
+         @jugador_actual = @jugadores.at(jugador_actual)
+         @estado_juego = EstadoJuego::JA_PREPARADO
       end
       
       def siguiente_jugador
-         raise NotImplementedError
+         pos = @jugadores.index(@jugador_actual)
+         if (pos + 1 == @jugadores.size)
+            @jugador_actual = @jugadores.at(0)
+         else
+            @jugador_actual = @jugadores.at(pos + 1)
+         end
+         
+         if (@jugador_actual.encarcelado)
+            @estado_juego = EstadoJuego::JA_ENCARCELADOCONOPCIONDELIBERTAD
+         else
+            @estado_juego = EstadoJuego::JA_PREPARADO
+         end
       end
       
       def tirar_dado
-         raise NotImplementedError
+         return @dado.tirar
       end
       
       def vender_propiedad(numero_casilla)
-         raise NotImplementedError
+         casilla = @tablero.obtener_casilla_numero(numero_casilla)
+         @jugador_actual.vender_propiedad(casilla)
       end
       
       def to_s

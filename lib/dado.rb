@@ -18,7 +18,9 @@ module ModeloQytetet
       #-------------------------------------------------------------------------
       
       def tirar
-         raise NotImplementedError
+         valor = (1 + rand(6))
+         @valor = valor
+         return valor
       end
       
       def to_s
