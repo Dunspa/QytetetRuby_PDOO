@@ -26,56 +26,56 @@ module ModeloQytetet
       
       # Inicializa todas las casillas del tablero con sus atributos
       def inicializar
-         @casillas << Casilla.new_casilla_normal(0, 0, TipoCasilla::SALIDA)
+         @casillas << Casilla.new(0, 0, TipoCasilla::SALIDA, nil)
          
-         @casillas << Casilla.new_calle(1, TituloPropiedad.new("Calle Bufita",
+         @casillas << Calle.new(1, TituloPropiedad.new("Calle Bufita",
          500, 50, 0.10, 150, 250))
    
-         @casillas << Casilla.new_calle(2, TituloPropiedad.new("Calle Victoria",
+         @casillas << Calle.new_calle(2, TituloPropiedad.new("Calle Victoria",
          1000, 100, 0.20, 1000, 750))
    
-         @casillas << Casilla.new_casilla_normal(3, 0, TipoCasilla::SORPRESA)
+         @casillas << Casilla.new_casilla_normal(3, 0, TipoCasilla::SORPRESA, nil)
          
-         @casillas << Casilla.new_casilla_normal(4, 0, TipoCasilla::JUEZ)
+         @casillas << Casilla.new_casilla_normal(4, 0, TipoCasilla::JUEZ, nil)
          
-         @casillas << Casilla.new_calle(5, TituloPropiedad.new("Hotel Chucho",
+         @casillas << Calle.new_calle(5, TituloPropiedad.new("Hotel Chucho",
          750, 75, 0.15, 400, 400))
          
-         @casillas << Casilla.new_calle(6, TituloPropiedad.new("Calle Goof",
+         @casillas << Calle.new_calle(6, TituloPropiedad.new("Calle Goof",
          600, 60, 0.13, 300, 350))
    
-         @casillas << Casilla.new_calle(7, TituloPropiedad.new("Centro Comercial Mango",
+         @casillas << Calle.new_calle(7, TituloPropiedad.new("Centro Comercial Mango",
          1000, 100, 0.20, 1000, 750))
    
-         @casillas << Casilla.new_casilla_normal(8, 500, TipoCasilla::IMPUESTO)
+         @casillas << Casilla.new_casilla_normal(8, 500, TipoCasilla::IMPUESTO, nil)
          
-         @casillas << Casilla.new_calle(9, TituloPropiedad.new("Calle Rocky",
+         @casillas << Calle.new_calle(9, TituloPropiedad.new("Calle Rocky",
          500, 50, 0.10, 150, 250))
    
-         @casillas << Casilla.new_calle(10, TituloPropiedad.new("Museo Gundam",
+         @casillas << Calle.new_calle(10, TituloPropiedad.new("Museo Gundam",
          850, 75, 0.15, 730, 600))
    
-         @casillas << Casilla.new_calle(11, TituloPropiedad.new("Cloaca de ratas",
+         @casillas << Calle.new_calle(11, TituloPropiedad.new("Cloaca de ratas",
          500, 60, 0.12, 225, 420))
    
-         @casillas << Casilla.new_casilla_normal(12, 0, TipoCasilla::PARKING)
+         @casillas << Casilla.new_casilla_normal(12, 0, TipoCasilla::PARKING, nil)
          
-         @casillas << Casilla.new_casilla_normal(13, 0, TipoCasilla::SORPRESA)
+         @casillas << Casilla.new_casilla_normal(13, 0, TipoCasilla::SORPRESA, nil)
          
-         @casillas << Casilla.new_calle(14, TituloPropiedad.new("Bosque Shiba",
+         @casillas << Calle.new_calle(14, TituloPropiedad.new("Bosque Shiba",
          735, 55, 0.17, 500, 500))
    
-         @casillas << Casilla.new_calle(15, TituloPropiedad.new("Calle Comunicación",
+         @casillas << Calle.new_calle(15, TituloPropiedad.new("Calle Comunicación",
          520, 60, 0.13, 300, 250))
    
-         @casillas << Casilla.new_casilla_normal(16, 0, TipoCasilla::CARCEL)
+         @casillas << Casilla.new_casilla_normal(16, 0, TipoCasilla::CARCEL, nil)
          
-         @casillas << Casilla.new_calle(17, TituloPropiedad.new("Paseo de Torna",
+         @casillas << Calle.new_calle(17, TituloPropiedad.new("Paseo de Torna",
          780, 90, 0.19, 400, 350))
          
-         @casillas << Casilla.new_casilla_normal(18, 0, TipoCasilla::SORPRESA)
+         @casillas << Casilla.new_casilla_normal(18, 0, TipoCasilla::SORPRESA, nil)
          
-         @casillas << Casilla.new_calle(19, TituloPropiedad.new("Fábrica de roboces",
+         @casillas << Calle.new_calle(19, TituloPropiedad.new("Fábrica de roboces",
          500, 70, 0.10, 999, 475))
    
          @carcel = @casillas[15]

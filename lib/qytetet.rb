@@ -114,6 +114,9 @@ module ModeloQytetet
                   end
                end
             end
+         elsif (@carta_actual.tipo == TipoSorpresa::CONVERTIRME)
+            especulador = @jugador_actual.convertirme(@carta_actual.valor)
+            @jugadores[@jugadores.index(@jugador_actual)] = especulador
          end
       end
       
@@ -158,7 +161,7 @@ module ModeloQytetet
       end
       
       def encarcelar_jugador
-         if (!@jugador_actual.tengo_carta_libertad)
+         if (!@jugador_actual.debo_ir_a_carcel)
             casilla_carcel = @tablero.carcel
             @jugador_actual.ir_a_carcel(casilla_carcel)
             @estado_juego = EstadoJuego::JA_ENCARCELADO
@@ -229,6 +232,12 @@ module ModeloQytetet
          # Carta sorpresa que saca al jugador de la cárcel
          @mazo << Sorpresa.new("Parece ser que le has caído bien a alguien y ha
          pagado tu fianza. Sales de la cárcel.", 0, TipoSorpresa::SALIRCARCEL) 
+         
+         # Cartas sorpresa que convierte al jugador en especulador
+         @mazo << Sorpresa.new("Ahora eres un especulador (y un caradura)", 
+         3000, TipoSorpresa::CONVERTIRME)
+         @mazo << Sorpresa.new("Ahora eres un especulador (y un caradura)", 
+         5000, TipoSorpresa::CONVERTIRME)
          
          # Se barajan las cartas
          @mazo.shuffle

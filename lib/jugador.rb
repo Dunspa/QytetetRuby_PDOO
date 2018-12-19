@@ -17,7 +17,20 @@ module ModeloQytetet
          @carta_libertad            # Carta para salir de la cárcel
          @propiedades = Array.new   # Títulos de propiedad del jugador
          # Casilla en la que se encuentra el jugador
-         @casilla_actual = Casilla.new_casilla_normal(0, 0, TipoCasilla::SALIDA) 
+         @casilla_actual = OtraCasilla.new(0, 0, TipoCasilla::SALIDA) 
+      end
+      
+      def self.nuevo(nombre)
+         self.new(nombre)
+      end
+      
+      def self.copia(otro_jugador)
+         self.new(otro_jugador.nombre)
+         @encarcelado = otro_jugador.encarcelado
+         @saldo = otro_jugador.saldo
+         @carta_libertad = otro_jugador.carta_libertad
+         @propiedades = otro_jugador.propiedades
+         @casilla_actual = otro_jugador.casilla_actual
       end
       
       #-------------------------------------------------------------------------
@@ -46,6 +59,11 @@ module ModeloQytetet
          return comprado
       end
       
+      def convertirme(fianza)
+         espec = Especulador.new(self, fianza);
+         return espec;
+      end
+      
       def cuantas_casas_hoteles_tengo
          casas_hoteles = 0
 
@@ -54,6 +72,10 @@ module ModeloQytetet
          end
 
          return casas_hoteles
+      end
+      
+      def debo_ir_a_carcel
+         return !tengo_carta_libertad
       end
       
       def debo_pagar_alquiler
@@ -80,7 +102,7 @@ module ModeloQytetet
       
       def devolver_carta_libertad
          copia_carta_libertad = Sorpresa.new(@carta_libertad.texto, 
-           @carta_libertad.valor, @carta_libertad.tipo)
+         @carta_libertad.valor, @carta_libertad.tipo)
          @carta_libertad = nil
 
          return copia_carta_libertad
@@ -88,17 +110,12 @@ module ModeloQytetet
       
       def edificar_casa(titulo)
          edificada = false
-         num_casas = titulo.numCasas
 
-         if (num_casas < 4)
-           coste_edificar_casa = titulo.precioEdificar
-           tengo_saldo = tengo_saldo(coste_edificar_casa)
-
-           if (tengo_saldo)
-             titulo.edificar_casa
-             modificar_saldo(-coste_edificar_casa)
-             edificada = true
-           end
+         if (puedo_edificar_casa(titulo))
+            coste_edificar_casa = titulo.precioEdificar
+            titulo.edificar_casa
+            modificar_saldo(-coste_edificar_casa)
+            edificada = true
          end
 
          return edificada
@@ -106,18 +123,12 @@ module ModeloQytetet
       
       def edificar_hotel(titulo)
          edificada = false
-         num_casas = titulo.numCasas
-         num_hoteles = titulo.numHoteles
 
-         if ((num_casas == 4) && (num_hoteles < 4))
-           coste_edificar_hotel = titulo.precioEdificar
-           tengo_saldo = tengo_saldo(coste_edificar_hotel)
-
-           if (tengo_saldo)
-             titulo.edificar_hotel
-             modificar_saldo(-coste_edificar_hotel)
-             edificada = true
-           end
+         if (puedo_edificar_hotel(titulo))
+            coste_edificar_hotel = titulo.precioEdificar
+            titulo.edificar_hotel
+            modificar_saldo(-coste_edificar_hotel)
+            edificada = true
          end
 
          return edificada
@@ -192,6 +203,14 @@ module ModeloQytetet
            @encarcelado = false
            modificar_saldo(-cantidad)
          end
+      end
+      
+      def puedo_edificar_casa(titulo)
+         return ((titulo.numCasas < 4) && tengoSaldo(titulo.precioEdificar))
+      end
+      
+      def puedo_edificar_hotel(titulo)
+         return ((titulo.numCasas >= 4) && (titulo.numHoteles < 4) && tengoSaldo(titulo.precioEdificar))
       end
       
       def tengo_carta_libertad
