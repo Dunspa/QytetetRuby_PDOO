@@ -55,6 +55,7 @@ module ModeloQytetet
       end
       
       def edificar_hotel
+        @numCasas = @numCasas - 4
         @numHoteles = @numHoteles + 1
       end
       

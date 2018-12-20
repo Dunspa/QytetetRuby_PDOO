@@ -9,14 +9,8 @@ module ModeloQytetet
       #-------------------------------------------------------------------------
       
       def initialize(jugador, fianza)
-         super.copia(jugador)
+         copia(jugador)
          @fianza = fianza
-      end
-      
-      def self.copia(un_jugador, fianza)
-         super.copia(un_jugador)
-         @fianza = fianza
-         return self
       end
       
       #-------------------------------------------------------------------------
@@ -54,7 +48,7 @@ module ModeloQytetet
       end
     
       def to_s
-         "\n-Especulador: #{super.to_s}"
+         "\n-Especulador: #{super.to_s} \nFianza: #{@fianza}"
       end
    end
 end

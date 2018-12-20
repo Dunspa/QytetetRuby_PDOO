@@ -148,7 +148,7 @@ module ModeloQytetet
       def edificar_casa(numero_casilla)
          casilla = @tablero.obtener_casilla_numero(numero_casilla)
          titulo = casilla.titulo
-         edificada = @jugador_Actual.edificar_casa(titulo)
+         edificada = @jugador_actual.edificar_casa(titulo)
          
          if (edificada)
             @estado_juego = EstadoJuego::JA_PUEDEGESTIONAR

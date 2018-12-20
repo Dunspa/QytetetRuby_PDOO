@@ -27,9 +27,7 @@ module ControladorQytetet
       
       def obtener_operaciones_juego_validas
          operaciones = Array.new
-         
-         
-         
+
          if @modelo.jugadores.empty?
             operaciones << OpcionMenu.index(:INICIARJUEGO)
          else
@@ -85,15 +83,15 @@ module ControladorQytetet
          casillas = Array.new
          opcion = OpcionMenu[opcion_menu]
          
-         if opcion == OpcionMenu::HIPOTECARPROPIEDAD
+         if opcion == :HIPOTECARPROPIEDAD
             casillas = @modelo.obtener_propiedades_jugador_segun_estado_hipoteca(false)
-         elsif opcion == OpcionMenu::CANCELARHIPOTECA
+         elsif opcion == :CANCELARHIPOTECA
             casillas = @modelo.obtener_propiedades_jugador_segun_estado_hipoteca(false)
-         elsif opcion == OpcionMenu::EDIFICARCASA
+         elsif opcion == :EDIFICARCASA
             casillas = @modelo.obtener_propiedades_jugador
-         elsif opcion == OpcionMenu::EDIFICARHOTEL
+         elsif opcion == :EDIFICARHOTEL
             casillas = @modelo.obtener_propiedades_jugador
-         elsif opcion == OpcionMenu::VENDERPROPIEDAD
+         elsif opcion == :VENDERPROPIEDAD
             casillas = @modelo.obtener_propiedades_jugador
          end
          

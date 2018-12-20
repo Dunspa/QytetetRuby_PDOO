@@ -24,8 +24,8 @@ module ModeloQytetet
          self.new(nombre)
       end
       
-      def self.copia(otro_jugador)
-         self.new(otro_jugador.nombre)
+      def copia(otro_jugador)
+         @nombre = otro_jugador.nombre
          @encarcelado = otro_jugador.encarcelado
          @saldo = otro_jugador.saldo
          @carta_libertad = otro_jugador.carta_libertad
@@ -134,7 +134,7 @@ module ModeloQytetet
       end
       
       def eliminar_de_mis_propiedades(titulo)
-         @propiedades.remove(titulo)
+         @propiedades.delete(titulo)
          titulo.propietario = nil
       end
       
@@ -205,11 +205,11 @@ module ModeloQytetet
       end
       
       def puedo_edificar_casa(titulo)
-         return ((titulo.numCasas < 4) && tengoSaldo(titulo.precioEdificar))
+         return ((titulo.numCasas < 4) && tengo_saldo(titulo.precioEdificar))
       end
       
       def puedo_edificar_hotel(titulo)
-         return ((titulo.numCasas >= 4) && (titulo.numHoteles < 4) && tengoSaldo(titulo.precioEdificar))
+         return ((titulo.numCasas >= 4) && (titulo.numHoteles < 4) && tengo_saldo(titulo.precioEdificar))
       end
       
       def tengo_carta_libertad
