@@ -81,11 +81,11 @@ module ModeloQytetet
       end
       
       def to_s
-        "\nTituloPropiedad{nombre: #{@nombre}, hipotecada: #{@hipotecada}, precioCompra: 
-        #{@precioCompra}, alquilerBase: #{@alquilerBase}, factorRevalorizacion:
-        #{@factorRevalorizacion}, hipotecaBase: #{@hipotecaBase}, 
-        precioEdificar: #{@precioEdificar}, numHoteles: #{@numHoteles},
-        numCasas: #{@numCasas}}\n"
+        "\n-TituloPropiedad: \nNombre: #{@nombre} \nHipotecada: #{@hipotecada} 
+         \nPrecio compra: #{@precioCompra} \nAlquiler base: #{@alquilerBase} 
+         \nFactor revalorizacion: #{@factorRevalorizacion} \nHipoteca base: #{@hipotecaBase} 
+         \nPrecio edificar: #{@precioEdificar} \nNúmero de hoteles: #{@numHoteles}
+         \nNúmero de casas: #{@numCasas}\n\n"
       end 
    end
 end

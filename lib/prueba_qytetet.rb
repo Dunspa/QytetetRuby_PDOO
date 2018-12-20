@@ -75,7 +75,7 @@ module ModeloQytetet
     
       def self.main 
          jugadores = get_nombre_jugadores
-         @@juego.inicializar_juego(jugadores)
+         @controlador.inicializar_juego(jugadores)
          
          puts "\nJugadores:"
          for s in jugadores

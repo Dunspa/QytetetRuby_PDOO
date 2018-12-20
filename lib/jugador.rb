@@ -5,8 +5,8 @@
 
 module ModeloQytetet
    class Jugador
-      attr_reader   :nombre, :saldo, :propiedades
-      attr_accessor :casilla_actual, :carta_libertad, :encarcelado
+      attr_reader :saldo, :nombre, :propiedades         
+      attr_accessor :carta_libertad, :casilla_actual, :encarcelado
       
       #-------------------------------------------------------------------------
       
@@ -14,10 +14,10 @@ module ModeloQytetet
          @nombre = n                # Nombre del jugador
          @encarcelado = false       # Si el jugador está en la cárcel
          @saldo = 7500              # Saldo del jugador (inicial 7500)
-         @carta_libertad            # Carta para salir de la cárcel
+         @carta_libertad = nil      # Carta para salir de la cárcel
          @propiedades = Array.new   # Títulos de propiedad del jugador
          # Casilla en la que se encuentra el jugador
-         @casilla_actual = OtraCasilla.new(0, 0, TipoCasilla::SALIDA) 
+         @casilla_actual = Casilla.new(0, 0, TipoCasilla::SALIDA) 
       end
       
       def self.nuevo(nombre)
@@ -101,8 +101,7 @@ module ModeloQytetet
       end
       
       def devolver_carta_libertad
-         copia_carta_libertad = Sorpresa.new(@carta_libertad.texto, 
-         @carta_libertad.valor, @carta_libertad.tipo)
+         copia_carta_libertad = @carta_libertad
          @carta_libertad = nil
 
          return copia_carta_libertad
@@ -230,18 +229,18 @@ module ModeloQytetet
       
       public
       def to_s
-         s = "\nJugador{nombre: #{@nombre}encarcelado: #{@encarcelado}"
-         s = s + "\nsaldo: #{@saldo}"
+         s = "\n-Jugador: \nNombre: #{@nombre} \nEncarcelado: #{@encarcelado}"
+         s = s + "\nSaldo: #{@saldo}"
          if @carta_libertad != nil
-            s = s + "\ncarta_libertad: #{@carta_libertad.to_s}"
+            s = s + "\nCarta libertad: #{@carta_libertad.to_s}"
          end
          
-         s = s + "\ncasilla_actual: #{@casilla_actual.to_s} \npropiedades: "
+         s = s + "\nCasilla actual: #{@casilla_actual.to_s} \nPropiedades: "
          for t in @propiedades
             s = s + t.to_s
          end
          
-         s = s + "}\n"
+         s = s + "\n"
          
          s
       end

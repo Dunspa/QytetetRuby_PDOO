@@ -3,6 +3,9 @@
 # Clase Calle, hereda de Casilla
 # Autor: Jose Luis Gallego Peña
 
+require_relative "casilla.rb"
+require_relative "tipo_casilla.rb"
+
 module ModeloQytetet
    class Calle < Casilla
       attr_reader :tipo
@@ -11,7 +14,9 @@ module ModeloQytetet
       #-------------------------------------------------------------------------
       
       def initialize(numero_casilla, titulo)
-         super(numero_casilla, titulo.precioCompra, TipoCasilla::CARCEL, titulo)
+         super(numero_casilla, titulo.precioCompra, TipoCasilla::CALLE)
+         
+         @titulo = titulo
       end
       
       #-------------------------------------------------------------------------
@@ -39,7 +44,9 @@ module ModeloQytetet
       end
       
       def to_s
-         return "\n-Calle:\n #{super.to_s}"
+         return "\n #{super.to_s}"
       end
+      
+      private :titulo=
    end
 end

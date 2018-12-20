@@ -18,13 +18,15 @@ module ModeloQytetet
       #-------------------------------------------------------------------------
       
       def tirar
-         valor = (1 + rand(6))
+         valor = rand(1..6)
          @valor = valor
          return valor
       end
       
       def to_s
-         "\nDado{valor: #{@valor}}\n"
+         "\n-Dado: \nvalor: #{@valor}"
       end
+      
+      private_class_method :new
    end
 end

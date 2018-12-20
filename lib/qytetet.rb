@@ -4,6 +4,15 @@
 # Autor: Jose Luis Gallego Peña
 
 require "singleton"
+require_relative "sorpresa.rb"
+require_relative "tablero.rb"
+require_relative "dado.rb"
+require_relative "jugador.rb"
+require_relative "especulador.rb"
+require_relative "estado_juego.rb"
+require_relative "metodo_salir_carcel.rb"
+require_relative "calle.rb"
+require_relative "casilla.rb"
 
 module ModeloQytetet
    class Qytetet
@@ -382,7 +391,7 @@ module ModeloQytetet
       end
       
       def to_s
-         s = "\nJuego Qytetet: #{@tablero.to_s}"
+         s = "\n-Juego Qytetet: #{@tablero.to_s}"
          
          for j in @jugadores
             s = s + j.to_s
@@ -393,12 +402,12 @@ module ModeloQytetet
          end
          
          if @jugador_actual != nil && @carta_actual != nil
-            s = s + ", jugador_actual: #{@jugador_actual.to_s}"
-            s = s + ", carta_actual: #{@carta_actual.to_s}"
+            s = s + "\nJugador actual: #{@jugador_actual.to_s}"
+            s = s + "\nCarta actual: #{@carta_actual.to_s}"
          end
          
          if @dado != nil
-            s = s + ", dado: #{@dado.to_s}"
+            s = s + "\nDado: #{@dado.to_s}"
          end
          
          s = s + "\n"
@@ -407,5 +416,6 @@ module ModeloQytetet
       end
       # Visibilidad de los métodos
       # private_class_method :encarcelar_jugador, :salida_jugadores
+      private_class_method :new
    end
 end

@@ -3,6 +3,9 @@
 # Clase Casilla
 # Autor: Jose Luis Gallego Peña
 
+require_relative "tipo_casilla"
+require_relative "calle.rb"
+
 module ModeloQytetet
    class Casilla
       attr_reader :numero_casilla, :coste, :tipo
@@ -11,11 +14,10 @@ module ModeloQytetet
       #-------------------------------------------------------------------------
       
       # Constructor
-      def initialize(numcasilla, cost, tip, tit)
+      def initialize(numcasilla, cost, tip)
          @numero_casilla = numcasilla   # Número de casilla (posición en tablero)
          @coste = cost                 # Coste de la casilla
          @tipo = tip                   # Tipo de la casilla
-         @titulo = tit                 # Asocia la casilla a su título
       end
       
       #-------------------------------------------------------------------------
@@ -25,8 +27,7 @@ module ModeloQytetet
       end
       
       def to_s
-         "\nCasilla{numero_casilla: #{@numero_casilla}, coste: #{@coste}, 
-         tipo: #{@tipo}, titulo: #{@titulo}}\n"
+         "\n-Casilla: \nNúmero de casilla: #{@numero_casilla} \nCoste: #{@coste} \nTipo: #{@tipo} \nTitulo: #{@titulo}"
       end
       
       # Indicar que un modificador tiene visibilidad privada
